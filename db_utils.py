@@ -8,6 +8,7 @@
 import os
 from sqlalchemy import create_engine, Table, Column, String, MetaData
 from datetime import datetime
+from zoneinfo import ZoneInfo  
 from sqlalchemy.exc import SQLAlchemyError
 from dotenv import load_dotenv
 
@@ -41,7 +42,9 @@ AcessosUsuarios = Table(
 metadata.create_all(engine)
 
 def salvar_prompt(prompt: str):
-    data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    fuso_brasil = ZoneInfo("America/Sao_Paulo")
+    data_hora = datetime.now(fuso_brasil).strftime("%Y-%m-%d %H:%M:%S")
+    print(data_hora)
     try:
         with engine.connect() as conn:
             ins = AcessosUsuarios.insert().values(prompt=prompt, data_hora=data_hora)
